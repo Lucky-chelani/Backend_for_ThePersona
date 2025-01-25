@@ -3,16 +3,16 @@ const usersModel = require("../models/usersModel");
 
 exports.isAdmin = async (req, res, next) => {
     try {
-        // Replace req._id with a proper source for user ID
-        const userId = req.user?.id || req.body.userId || req.params.userId;
+        // Get username and email from the request
+        const { username, email } = req.body;
 
-        // Validate the user ID
-        if (!mongoose.Types.ObjectId.isValid(userId)) {
-            return res.status(400).json({ message: 'Invalid user ID' });
+        // Validate that username and email are provided
+        if (!username || !email) {
+            return res.status(400).json({ message: 'Username and email are required' });
         }
 
-        // Query the user
-        const user = await usersModel.findOne({ _id: userId });
+        // Query the user based on username and email
+        const user = await usersModel.findOne({ username: username, email: email.toLowerCase() });
 
         // Check if the user exists
         if (!user) {
