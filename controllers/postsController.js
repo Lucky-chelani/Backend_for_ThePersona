@@ -53,7 +53,7 @@ exports.createPost = async (req, res) => {
 	try {
 		const { error, value } = createPostSchema.validate({
 			title,
-			description,
+			content,
 			userId,
 		});
 		if (error) {
@@ -64,7 +64,7 @@ exports.createPost = async (req, res) => {
 
 		const result = await Post.create({
 			title,
-			description,
+			content,
 			userId,
 		});
 		res.status(201).json({ success: true, message: 'created', data: result });
@@ -75,12 +75,12 @@ exports.createPost = async (req, res) => {
 
 exports.updatePost = async (req, res) => {
 	const { _id } = req.query;
-	const { title, description } = req.body;
+	const { title, content } = req.body;
 	const { userId } = req.user;
 	try {
 		const { error, value } = createPostSchema.validate({
 			title,
-			description,
+			content,
 			userId,
 		});
 		if (error) {
@@ -98,7 +98,7 @@ exports.updatePost = async (req, res) => {
 			return res.status(403).json({ success: false, message: 'Unauthorized' });
 		}
 		existingPost.title = title;
-		existingPost.description = description;
+		existingPost.content = content;
 
 		const result = await existingPost.save();
 		res.status(200).json({ success: true, message: 'Updated', data: result });

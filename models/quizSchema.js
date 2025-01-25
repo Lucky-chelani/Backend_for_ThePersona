@@ -3,7 +3,11 @@ const quizSchema = mongoose.Schema(
     {
         title: { type: String, required: [true, 'title is required!'], trim: true },
         questions: [{ question: String, options: [String], answer: String }],
-        createdBy: { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true }
+        duration: { 
+            type: Number, // Duration in minutes
+            required: [true, 'Duration is required!'] 
+        },
+        createdBy: { type: String ,  required: true }
     }
        
 );

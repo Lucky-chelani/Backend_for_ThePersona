@@ -7,9 +7,9 @@ const postSchema = mongoose.Schema(
 			required: [true, 'title is required!'],
 			trim: true,
 		},
-		description: {
+		Content : {
 			type: String,
-			required: [true, 'description is required!'],
+			required: [true, 'Content is required!'],
 			trim: true,
 		},
 		userId: {

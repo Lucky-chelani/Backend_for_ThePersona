@@ -89,6 +89,7 @@ exports.signin = async (req, res) => {
 			})
 			.json({
 				success: true,
+				userId: existingUser._id,
 				token,
 				message: 'logged in successfully',
 			});
