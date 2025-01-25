@@ -11,7 +11,7 @@ const { doHash, doHashValidation, hmacProcess } = require('../utils/hashing');
 const transport = require('../middlewares/sendMail');
 
 exports.signup = async (req, res) => {
-	const { email, password } = req.body;
+	const { username,email, password } = req.body;
 	try {
 		const { error, value } = signupSchema.validate({ email, password });
 
@@ -31,6 +31,7 @@ exports.signup = async (req, res) => {
 		const hashedPassword = await doHash(password, 12);
 
 		const newUser = new User({
+			username,
 			email,
 			password: hashedPassword,
 		});
