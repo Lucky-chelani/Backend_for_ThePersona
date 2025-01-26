@@ -9,6 +9,73 @@ const {
 const User = require('../models/usersModel');
 const { doHash, doHashValidation, hmacProcess } = require('../utils/hashing');
 const transport = require('../middlewares/sendMail');
+const htmlContent = `
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>OTP Email</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f4f4;
+        }
+        .container {
+            width: 100%;
+            max-width: 600px;
+            margin: 0 auto;
+            background-color: #ffffff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+        h1 {
+            color: #333333;
+            font-size: 24px;
+            text-align: center;
+        }
+        p {
+            font-size: 16px;
+            color: #333333;
+            line-height: 1.6;
+        }
+        .otp {
+            font-size: 20px;
+            font-weight: bold;
+            color: #1a73e8;
+            text-align: center;
+            margin: 20px 0;
+        }
+        .footer {
+            font-size: 14px;
+            color: #888888;
+            text-align: center;
+            margin-top: 30px;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <h1>Hello [User's Name],</h1>
+        <p>Your One-Time Password (OTP) for accessing The Persona website is:</p>
+        <div class="otp">OTP_CODE</div>
+        <p>This OTP is valid for 10 minutes only. Please do not share this code with anyone for security reasons.</p>
+        <p>If you did not request this OTP, please ignore this message.</p>
+        <p>Thank you,</p>
+        <p>The Persona Team</p>
+
+        <div class="footer">
+            <p>&copy; 2025 The Persona. All rights reserved.</p>
+        </div>
+    </div>
+
+</body>
+</html>
+`;
 
 exports.signup = async (req, res) => {
 	const { username,email, password } = req.body;
@@ -124,9 +191,10 @@ exports.sendVerificationCode = async (req, res) => {
 		let info = await transport.sendMail({
 			from: process.env.NODE_CODE_SENDING_EMAIL_ADDRESS,
 			to: existingUser.email,
-			subject: 'verification code',
-			html: '<h1>' + codeValue + '</h1>',
+			subject: ' Your Persona Verification Code',
+			html:htmlContent.replace('OTP_CODE', codeValue).replace('[User\'s Name]', existingUser.username),
 		});
+		console.log(codeValue);
 
 		if (info.accepted[0] === existingUser.email) {
 			const hashedCodeValue = hmacProcess(
